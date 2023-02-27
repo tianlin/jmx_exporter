@@ -64,6 +64,8 @@
                                         <Agent-Class>io.prometheus.jmx.JavaAgent</Agent-Class>
                                         <Implementation-Version>${project.version}</Implementation-Version>
                                         <Implementation-Title>${project.artifactId}</Implementation-Title>
+                                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
