@@ -94,33 +94,56 @@ public class JavaAgent {
   }
 
   public static class HostNameInterceptor {
+    @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
+    public static String enter(@Advice.This InetSocketAddress address) {
+      if (address.getAddress() != null && address.getAddress().getHostAddress() != null) {
+        return address.getAddress().getHostAddress();
+      } else {
+        return null;
+      }
+    }
+
     @Advice.OnMethodExit
     public static void exit(@Advice.This InetSocketAddress address, @Advice.Origin Method origin,
+                            @Advice.Enter String enter,
                             @Advice.Return(readOnly = false) String ret) {
-      if (address.getAddress() != null && address.getAddress().getHostAddress() != null) {
-        ret = address.getAddress().getHostAddress();
+      if (enter != null) {
+        ret = enter;
       }
     }
   }
 
   public static class InetAddrHostNameInterceptor {
-    @Advice.OnMethodExit
-    public static void exit(@Advice.This InetAddress address, @Advice.Origin Method origin,
-                            @Advice.Return(readOnly = false) String ret) {
-      ret = address.getHostAddress();
+    @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
+    public static String enter(@Advice.This InetAddress address) {
+      return address.getHostAddress();
     }
-  }
 
-  public static class CanonicalHostNameInterceptor {
     @Advice.OnMethodExit
     public static void exit(@Advice.This InetAddress address, @Advice.Origin Method origin,
+                            @Advice.Enter String enter,
                             @Advice.Return(readOnly = false) String ret) {
-      if (address.getHostAddress() != null) {
-        ret = address.getHostAddress();
+      if (enter != null) {
+        ret = enter;
       }
     }
   }
 
+  public static class CanonicalHostNameInterceptor {
+    @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
+    public static String enter(@Advice.This InetAddress address) {
+      return address.getHostAddress();
+    }
+
+    @Advice.OnMethodExit
+    public static void exit(@Advice.This InetAddress address, @Advice.Origin Method origin,
+                            @Advice.Enter String enter,
+                            @Advice.Return(readOnly = false) String ret) {
+      if (enter != null) {
+        ret = enter;
+      }
+    }
+  }
 
   /**
    * Parse the Java Agent configuration. The arguments are typically specified to the JVM as a javaagent as
